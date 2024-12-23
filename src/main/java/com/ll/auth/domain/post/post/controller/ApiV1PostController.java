@@ -8,6 +8,7 @@ import com.ll.auth.domain.post.post.service.PostService;
 import com.ll.auth.global.rsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -82,7 +83,9 @@ public class ApiV1PostController {
             String title,
             @NotBlank
             @Length(min = 2)
-            String content
+            String content,
+            @NotNull
+            Long authorId
     ) {
     }
 
@@ -94,7 +97,7 @@ public class ApiV1PostController {
 
     @PostMapping
     public RsData<PostWriteResBody> writeItem(@RequestBody @Valid PostWriteReqBody reqBody) {
-        Member actor = memberService.findByUsername("user3").get();
+        Member actor = memberService.findById(reqBody.authorId).get();
 
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
