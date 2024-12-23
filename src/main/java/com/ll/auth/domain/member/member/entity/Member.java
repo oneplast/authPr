@@ -26,7 +26,7 @@ public class Member extends BaseTime {
     private String nickname;
 
     @Column(unique = true, length = 50)
-    private String password2;
+    private String apiKey;
 
     public String getName() {
         return this.nickname;
