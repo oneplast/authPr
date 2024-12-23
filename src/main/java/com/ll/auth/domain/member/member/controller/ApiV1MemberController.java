@@ -5,10 +5,13 @@ import com.ll.auth.domain.member.member.entity.Member;
 import com.ll.auth.domain.member.member.service.MemberService;
 import com.ll.auth.global.exceptions.ServiceException;
 import com.ll.auth.global.rsData.RsData;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApiV1MemberController {
     private final MemberService memberService;
+    private final HttpServletRequest request;
+
+    private Member checkAuthentication() {
+        String credentials = request.getHeader("Authorization");
+        String apiKey = credentials.substring("Bearer ".length());
+
+        Optional<Member> opActor = memberService.findByApiKey(apiKey);
+
+        if (opActor.isEmpty()) {
+            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+        }
+
+        return opActor.get();
+    }
 
     record MemberJoinReqBody(
             @NotBlank
@@ -75,5 +92,12 @@ public class ApiV1MemberController {
 
         return new RsData<>("201-1", "%s님 환영합니다.".formatted(member.getNickname()),
                 new MemberLoginResBody(new MemberDto(member), apiKey));
+    }
+
+    @GetMapping("/me")
+    public MemberDto me() {
+        Member actor = checkAuthentication();
+
+        return new MemberDto(actor);
     }
 }
