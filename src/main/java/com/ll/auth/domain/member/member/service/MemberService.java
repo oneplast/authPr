@@ -4,6 +4,7 @@ import com.ll.auth.domain.member.member.entity.Member;
 import com.ll.auth.domain.member.member.repository.MemberRepository;
 import com.ll.auth.global.exceptions.ServiceException;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class MemberService {
                 .username(username)
                 .password(password)
                 .nickname(nickname)
+                .password2(UUID.randomUUID().toString())
                 .build();
 
         return memberRepository.save(member);
