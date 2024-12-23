@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,10 +50,11 @@ public class ApiV1PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RsData<Void>> deleteItem(@PathVariable long id, long authorId, String password) {
-        Member actor = memberService.findById(authorId).get();
+    public ResponseEntity<RsData<Void>> deleteItem(@PathVariable long id, @RequestHeader long actorId,
+                                                   @RequestHeader String actorPassword) {
+        Member actor = memberService.findById(actorId).get();
 
-        if (!actor.getPassword().equals(password)) {
+        if (!actor.getPassword().equals(actorPassword)) {
             throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
         }
 
