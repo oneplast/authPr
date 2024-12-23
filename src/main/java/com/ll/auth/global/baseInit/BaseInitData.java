@@ -35,13 +35,13 @@ public class BaseInitData {
             return;
         }
 
-        memberService.join("system", "1234", "시스템");
-        memberService.join("admin", "1234", "관리자");
-        memberService.join("user1", "1234", "유저1");
-        memberService.join("user2", "1234", "유저2");
-        memberService.join("user3", "1234", "유저3");
-        memberService.join("user4", "1234", "유저4");
-        memberService.join("user5", "1234", "유저5");
+        memberService.join("system", "1234system", "시스템");
+        memberService.join("admin", "1234admin", "관리자");
+        memberService.join("user1", "1234user1", "유저1");
+        memberService.join("user2", "1234user2", "유저2");
+        memberService.join("user3", "1234user3", "유저3");
+        memberService.join("user4", "1234user4", "유저4");
+        memberService.join("user5", "1234user5", "유저5");
     }
 
     @Transactional
