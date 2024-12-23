@@ -7,6 +7,7 @@ import com.ll.auth.domain.post.post.entity.Post;
 import com.ll.auth.domain.post.post.service.PostService;
 import com.ll.auth.global.exceptions.ServiceException;
 import com.ll.auth.global.rsData.RsData;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1PostController {
     private final PostService postService;
     private final MemberService memberService;
+    private final HttpServletRequest request;
 
-    private Member checkAuthentication(String credentials) {
+    private Member checkAuthentication() {
+        String credentials = request.getHeader("Authorization");
         credentials = credentials.substring("Bearer ".length());
         String[] credentialsBits = credentials.split("/", 2);
         long actorId = Long.parseLong(credentialsBits[0]);
@@ -64,9 +66,8 @@ public class ApiV1PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RsData<Void>> deleteItem(@PathVariable long id,
-                                                   @RequestHeader("Authorization") String credentials) {
-        Member actor = checkAuthentication(credentials);
+    public ResponseEntity<RsData<Void>> deleteItem(@PathVariable long id) {
+        Member actor = checkAuthentication();
 
         Post post = postService.findById(id).get();
 
@@ -92,9 +93,8 @@ public class ApiV1PostController {
 
     @PutMapping("/{id}")
     @Transactional
-    public RsData<PostDto> modifyItem(@PathVariable long id, @RequestBody @Valid PostModifyReqBody reqBody,
-                                      @RequestHeader("Authorization") String credentials) {
-        Member actor = checkAuthentication(credentials);
+    public RsData<PostDto> modifyItem(@PathVariable long id, @RequestBody @Valid PostModifyReqBody reqBody) {
+        Member actor = checkAuthentication();
 
         Post post = postService.findById(id).get();
 
@@ -118,9 +118,8 @@ public class ApiV1PostController {
     }
 
     @PostMapping
-    public RsData<PostDto> writeItem(@RequestBody @Valid PostWriteReqBody reqBody,
-                                     @RequestHeader("Authorization") String credentials) {
-        Member actor = checkAuthentication(credentials);
+    public RsData<PostDto> writeItem(@RequestBody @Valid PostWriteReqBody reqBody) {
+        Member actor = checkAuthentication();
 
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
