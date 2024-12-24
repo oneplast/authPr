@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,5 +46,15 @@ public class Post extends BaseTime {
                 .build();
 
         comments.add(comment);
+    }
+
+    public List<PostComment> getCommentsByOrderByIdDesc() {
+        return comments.reversed();
+    }
+
+    public Optional<PostComment> getCommentById(long commentId) {
+        return comments.stream()
+                .filter(comment -> comment.getId() == commentId)
+                .findFirst();
     }
 }
