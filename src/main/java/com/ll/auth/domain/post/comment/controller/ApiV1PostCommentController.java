@@ -8,7 +8,6 @@ import com.ll.auth.domain.post.post.service.PostService;
 import com.ll.auth.global.exceptions.ServiceException;
 import com.ll.auth.global.rq.Rq;
 import com.ll.auth.global.rsData.RsData;
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts/{postId}/comments")
 public class ApiV1PostCommentController {
-    private final EntityManager em;
     private final Rq rq;
     private final PostService postService;
 
@@ -75,7 +73,7 @@ public class ApiV1PostCommentController {
 
         PostComment postComment = post.addComment(actor, reqBody.content);
 
-        em.flush();
+        postService.flush();
 
         return new RsData<>("201-1", "%d번 댓글이 작성되었습니다.".formatted(postComment.getId()));
     }
