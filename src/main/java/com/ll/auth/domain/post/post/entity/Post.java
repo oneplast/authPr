@@ -38,7 +38,7 @@ public class Post extends BaseTime {
     @Builder.Default
     private List<PostComment> comments = new ArrayList<>();
 
-    public void addComment(Member author, String content) {
+    public PostComment addComment(Member author, String content) {
         PostComment comment = PostComment.builder()
                 .post(this)
                 .author(author)
@@ -46,6 +46,8 @@ public class Post extends BaseTime {
                 .build();
 
         comments.add(comment);
+
+        return comment;
     }
 
     public List<PostComment> getCommentsByOrderByIdDesc() {
